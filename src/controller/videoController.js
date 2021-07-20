@@ -1,12 +1,4 @@
-import Video from "../models/Video";
-
-/*Video.find({}, (error, videos) => {
-    if(error){
-        return res.render("server-error");
-    }
-    return res.render("home", { pageTitle: "Home", videos })
-})
-*/
+import Video, { formatHashtags } from "../models/Video";
 
 export const home = async (req, res) => {
     try{
@@ -42,12 +34,8 @@ export const postEdit = async(req, res) => {
         return res.render("404", {pageTitle: "Video not found."})
     }
     await Video.findByIdAndUpdate(id, {
-        title, description, hashtags: hashtags.split(",").map(word => word.startsWith("#") ? word : `#${word}`),
+        title, description, hashtags: formatHashtags(hashtags),
     })
-    // video.title = title;
-    // video.description = description;
-    // video.hashtags = hashtags.split(",").map(word => word.startsWith("#") ? word : `#${word}`);
-    // await video.save();
     return res.redirect(`/videos/${id}`);
 };
 
@@ -65,7 +53,7 @@ export const postUpload = async (req, res) => {
         await Video.create({
             title,
             description,
-            hashtags,
+            hashtags: formatHashtags(hashtags),
         })
         //await video.save();
         return res.redirect("/");
