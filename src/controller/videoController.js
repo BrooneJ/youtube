@@ -1,4 +1,4 @@
-import Video, { formatHashtags } from "../models/Video";
+import Video from "../models/Video";
 
 export const home = async (req, res) => {
     try{
@@ -34,7 +34,7 @@ export const postEdit = async(req, res) => {
         return res.render("404", {pageTitle: "Video not found."})
     }
     await Video.findByIdAndUpdate(id, {
-        title, description, hashtags: formatHashtags(hashtags),
+        title, description, hashtags: Video.formatHashtags(hashtags),
     })
     return res.redirect(`/videos/${id}`);
 };
@@ -53,7 +53,7 @@ export const postUpload = async (req, res) => {
         await Video.create({
             title,
             description,
-            hashtags: formatHashtags(hashtags),
+            hashtags: Video.formatHashtags(hashtags),
         })
         //await video.save();
         return res.redirect("/");
