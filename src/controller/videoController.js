@@ -39,8 +39,6 @@ export const postEdit = async(req, res) => {
     return res.redirect(`/videos/${id}`);
 };
 
-export const search = (req, res) => res.send("search");
-export const deleteVideo = (req, res) => res.send("Delete Video");
 
 export const getUpload = (req, res) => {
     return res.render("upload", {pageTitle: "Upload Video"});
@@ -49,18 +47,25 @@ export const getUpload = (req, res) => {
 export const postUpload = async (req, res) => {
     const {title, description, hashtags} = req.body;
     //const video = new Video({
-    try{
-        await Video.create({
-            title,
-            description,
-            hashtags: Video.formatHashtags(hashtags),
-        })
-        //await video.save();
-        return res.redirect("/");
-    } catch(error) {
-        return res.render("upload", {
-             pageTitle: "Upload Video", 
-             errorMessage: error._message
+        try{
+            await Video.create({
+                title,
+                description,
+                hashtags: Video.formatHashtags(hashtags),
+            })
+            //await video.save();
+            return res.redirect("/");
+        } catch(error) {
+            return res.render("upload", {
+                pageTitle: "Upload Video", 
+                errorMessage: error._message
             });
+        }
     }
+
+export const search = (req, res) => res.send("search");
+export const deleteVideo = async (req, res) => {
+    const { id } = req.params;
+    await Video.findByIdAndDelete(id);
+    return res.redirect("/");
 }
