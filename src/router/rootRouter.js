@@ -1,11 +1,11 @@
 import express from "express";
-import {join, login} from "../controller/userController";
+import {getJoin, postJoin, login} from "../controller/userController";
 import {search, home} from "../controller/videoController";
 
 const rootRouter = express.Router();
 
 rootRouter.get("/", home);
-rootRouter.get("/join", join);
+rootRouter.route("/join").get(getJoin).post(postJoin);
 rootRouter.get("/login", login);
 rootRouter.get("/search", search);
 
