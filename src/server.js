@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 
 import session from "express-session";
+import MongoStore from "connect-mongo";
 
 import rootRouter from "./router/rootRouter";
 import videoRouter from "./router/videoRouter";
@@ -19,9 +20,10 @@ app.use(logger);
 app.use(express.urlencoded({extended:true}));
 
 app.use(session({
-    secret: "Hello!",
+    secret: process.env.COOKIE_SECRET,
     resave: true,
     saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: process.env.DB_URL}),
 }))
 
 app.use(localsMiddleware);
