@@ -104,30 +104,30 @@ export const finishGithubLogin = async (req, res) => {
     ).json();
     console.log(userData);
     const emailData = await (
-        await fetch(`${apiUrl}/user/emails`, {
-            headers: {
-              Authorization: `token ${access_token}`,
-            },
-          })
+      await fetch(`${apiUrl}/user/emails`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
     ).json();
     const emailObj = emailData.find(
-        (email) => email.primary === true && email.verified === true
+      (email) => email.primary === true && email.verified === true
     );
-    if(!emailObj){
-        return res.redirect("/login");
+    if (!emailObj) {
+      return res.redirect("/login");
     }
     let user = await User.findOne({ email: emailObj.email });
-    if(!user){
-        user = await User.create({
-          avatarUrl: userData.avatar_url,
-          name: userData.name ? userData.name : userData.login,
-          username: userData.login,
-          email: emailObj.email,
-          password:"",
-          socialOnly: true,
-          location: userData.location,
-        });
-      }
+    if (!user) {
+      user = await User.create({
+        avatarUrl: userData.avatar_url,
+        name: userData.name ? userData.name : userData.login,
+        username: userData.login,
+        email: emailObj.email,
+        password: "",
+        socialOnly: true,
+        location: userData.location,
+      });
+    }
     req.session.loggedIn = true;
     req.session.user = user;
     return res.redirect("/");
@@ -149,12 +149,12 @@ export const postEdit = async (req, res) => {
   const pageTitle = "Edit Profile";
   const {
     session: {
-      user: {_id, email: sessionEmail, username: sessionUsername},
+      user: { _id, email: sessionEmail, username: sessionUsername },
     },
-    body: {name, email, username, location },
+    body: { name, email, username, location },
   } = req;
 
-  if(sessionEmail !== email){
+  if (sessionEmail !== email) {
     const exists = await User.exists({ email });
     if (exists) {
       return res.status(404).render("edit-profile", {
@@ -164,7 +164,7 @@ export const postEdit = async (req, res) => {
     }
   }
 
-  if(sessionUsername !== username){
+  if (sessionUsername !== username) {
     const exists = await User.exists({ username });
     if (exists) {
       return res.status(404).render("edit-profile", {
@@ -175,18 +175,43 @@ export const postEdit = async (req, res) => {
   }
 
   const updatedUser = await User.findByIdAndUpdate(_id, {
-    name, 
-    email, 
-    username, 
+    name,
+    email,
+    username,
     location,
-  }, {new: true});
+  }, { new: true });
   req.session.user = updatedUser;
   return res.redirect("/users/edit");
 }
 
 export const getChangePassword = (req, res) => {
-  return res.render("users/change-password", {pageTitle: "Change Password" })
+  if (req.session.user.socialOnly === true) {
+    return res.redirect("/");
+  }
+  return res.render("users/change-password", { pageTitle: "Change Password" })
 }
-export const postChangePassword = (req, res) => {}
+
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { oldPassword,
+      newPassword,
+      newPasswordConfirmation, },
+  } = req;
+  const user = await User.findById(_id);
+  const ok = await bcrypt.compare(oldPassword, user.password);
+  if (!ok) {
+    return res.status(404).render("users/change-password", { pageTitle: "Change Password", errorMessage: "The current password is incorrect." })
+  }
+
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(404).render("users/change-password", { pageTitle: "Change Password", errorMessage: "The password does not match the confirmation." })
+  }
+  user.password = newPassword;
+  await user.save();
+  return res.redirect("/users/logout");
+}
 
 export const see = (req, res) => res.send("See user");
