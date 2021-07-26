@@ -115,6 +115,7 @@ export const finishGithubLogin = async (req, res) => {
         return res.redirect("/login");
     }
     const existingUser = await User.findOne({ email: emailObj.email });
+    console.log(existingUser);
     if(existingUser){
         req.session.loggedIn = true;
         req.session.user = existingUser;
@@ -129,7 +130,7 @@ export const finishGithubLogin = async (req, res) => {
             location: userData.location,
         })
         req.session.loggedIn = true;
-        req.session.user = existingUser;
+        req.session.user = user;
         return res.redirect("/");
     }
   } else {
