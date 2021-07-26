@@ -101,6 +101,7 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
+    console.log(userData);
     const emailData = await (
         await fetch(`${apiUrl}/user/emails`, {
             headers: {
@@ -117,15 +118,15 @@ export const finishGithubLogin = async (req, res) => {
     let user = await User.findOne({ email: emailObj.email });
     if(!user){
         user = await User.create({
-        avatarUrl: userData.avatar_url,
-        name: userData.name ? userData.name : userData.login,
-        username: userData.login,
-        email: emailObj.email,
-        password:"",
-        socialOnly: true,
-        location: userData.location,
-      });
-    }
+          avatarUrl: userData.avatar_url,
+          name: userData.name ? userData.name : userData.login,
+          username: userData.login,
+          email: emailObj.email,
+          password:"",
+          socialOnly: true,
+          location: userData.location,
+        });
+      }
     req.session.loggedIn = true;
     req.session.user = user;
     return res.redirect("/");
@@ -134,7 +135,10 @@ export const finishGithubLogin = async (req, res) => {
   }
 };
 
+export const logout = (req, res) => {
+  req.session.destroy();
+  return res.redirect("/");
+};
+
 export const edit = (req, res) => res.send("edit");
-export const remove = (req, res) => res.send("remove");
-export const logout = (req, res) => res.send("logout");
 export const see = (req, res) => res.send("See user");
