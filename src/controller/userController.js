@@ -44,6 +44,7 @@ export const postLogin = async (req, res) => {
   const { username, password } = req.body;
   const pageTitle = "Login";
   const user = await User.findOne({ username, socialOnly: false });
+  //socialOnly가 false이면 email&password로만 로그인 가능
   if (!user) {
     return res.status(404).render("login", {
       pageTitle,
@@ -140,5 +141,11 @@ export const logout = (req, res) => {
   return res.redirect("/");
 };
 
-export const edit = (req, res) => res.send("edit");
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", { pageTitle: "Edit Profile" });
+}
+
+export const postEdit = (req, res) => {
+  return res.render("edit-profile");
+}
 export const see = (req, res) => res.send("See user");
