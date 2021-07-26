@@ -149,12 +149,12 @@ export const postEdit = async (req, res) => {
   const pageTitle = "Edit Profile";
   const {
     session: {
-      user: {_id, email: sesstionEmail, username: sessionUsername},
+      user: {_id, email: sessionEmail, username: sessionUsername},
     },
     body: {name, email, username, location },
   } = req;
 
-  if(sesstionEmail !== email){
+  if(sessionEmail !== email){
     const exists = await User.exists({ email });
     if (exists) {
       return res.status(404).render("edit-profile", {
@@ -183,4 +183,10 @@ export const postEdit = async (req, res) => {
   req.session.user = updatedUser;
   return res.redirect("/users/edit");
 }
+
+export const getChangePassword = (req, res) => {
+  return res.render("users/change-password", {pageTitle: "Change Password" })
+}
+export const postChangePassword = (req, res) => {}
+
 export const see = (req, res) => res.send("See user");
