@@ -15,6 +15,7 @@ const videoControls = document.getElementById("videoControls");
 
 let controlsTimeout = null;
 let controlsMovementTimeout = null;
+let controlsMovementTimeout2 = null;
 let volumeValue = 0.5;
 video.volume = volumeValue;
 
@@ -99,6 +100,25 @@ const handleMouseLeave = () => {
     controlsTimeout = setTimeout(hideControls, 3000);
 }
 
+const handleClickScreen = (e) => {
+    handlePlayClick();
+}
+
+const showMouse = () => {
+    if (controlsMovementTimeout2) {
+        clearTimeout(controlsMovementTimeout2);
+        controlsMovementTimeout2 = null;
+    }
+    videoControls.classList.add("hidden__controls");
+    videoContainer.style.cursor = "default";
+    controlsMovementTimeout2 = setTimeout(hideMouse, 3000);
+}
+
+const hideMouse = () => {
+    videoControls.classList.remove("hidden__controls");
+    videoContainer.style.cursor = "none";
+}
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -106,5 +126,8 @@ video.addEventListener("loadeddata", handleLoadedMetadata);
 video.addEventListener("timeupdate", handelTimeUpdate);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
+videoContainer.addEventListener("click", handleClickScreen);
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
+videoContainer.addEventListener("mousemove", showMouse);
+videoContainer.addEventListener("mouseleave", hideMouse);
