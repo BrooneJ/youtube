@@ -100,9 +100,14 @@ const handleMouseLeave = () => {
     controlsTimeout = setTimeout(hideControls, 3000);
 }
 
-const handleClickScreen = (e) => {
-    handlePlayClick();
-}
+// const handleClickScreen = (e) => {
+//     if (video.paused) {
+//         video.play();
+//     } else {
+//         video.pause();
+//     }
+//     playBtnIcon.classList = video.paused ? "fas fa-play" : "fas fa-pause";
+// }
 
 const showMouse = () => {
     if (controlsMovementTimeout2) {
@@ -126,7 +131,7 @@ const handleEnded = () => {
     });
 }
 
-playBtn.addEventListener("click", handlePlayClick);
+playBtnIcon.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("loadeddata", handleLoadedMetadata);
@@ -134,7 +139,7 @@ video.addEventListener("timeupdate", handelTimeUpdate);
 video.addEventListener("ended", handleEnded);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
-videoContainer.addEventListener("click", handleClickScreen);
+// videoContainer.addEventListener("click", handleClickScreen);
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
 videoContainer.addEventListener("mousemove", showMouse);
