@@ -100,14 +100,14 @@ const handleMouseLeave = () => {
     controlsTimeout = setTimeout(hideControls, 3000);
 }
 
-// const handleClickScreen = (e) => {
-//     if (video.paused) {
-//         video.play();
-//     } else {
-//         video.pause();
-//     }
-//     playBtnIcon.classList = video.paused ? "fas fa-play" : "fas fa-pause";
-// }
+const handleClickScreen = (e) => {
+    if (video.paused) {
+        video.play();
+    } else {
+        video.pause();
+    }
+    playBtnIcon.classList = video.paused ? "fas fa-play" : "fas fa-pause";
+}
 
 const showMouse = () => {
     if (controlsMovementTimeout2) {
@@ -125,6 +125,7 @@ const hideMouse = () => {
 }
 
 const handleEnded = () => {
+    playBtnIcon.classList = "fas fa-play";
     const { id } = videoContainer.dataset;
     fetch(`/api/videos/${id}/view`, {
         method: "POST",
@@ -139,7 +140,7 @@ video.addEventListener("timeupdate", handelTimeUpdate);
 video.addEventListener("ended", handleEnded);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
-// videoContainer.addEventListener("click", handleClickScreen);
+video.addEventListener("click", handleClickScreen);
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
 videoContainer.addEventListener("mousemove", showMouse);
