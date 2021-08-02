@@ -9,14 +9,9 @@ const handelCancel = async (event) => {
     const commentId = event.target.parentElement.dataset.id;
     console.log(commentId);
 
-    const response = await fetch(`/api/comments/${commentId}`, {
+    await fetch(`/api/comments/${commentId}`, {
         method: "DELETE",
     })
-    if (response.status === 200) {
-        console.log("Good");
-    }
-
-
 }
 
 if (commentList) {

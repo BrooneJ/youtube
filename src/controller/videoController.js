@@ -83,9 +83,16 @@ export const deleteVideo = async (req, res) => {
     const { id } = req.params;
     const { user: { _id } } = req.session;
     const video = await Video.findById(id);
+
     if (!video) {
         return res.status(404).render("404", { pageTitle: "Video not found." });
     }
+
+    const user = await User.findById(_id);
+    const num = user.videos.indexOf(id);
+    user.videos.splice(num, 1);
+    user.save();
+
     if (String(video.owner) !== String(_id)) {
         return res.status(403).redirect("/");
     }
